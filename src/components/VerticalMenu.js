@@ -3,25 +3,140 @@ import {Link, BrowserRouter as Router, Route} from 'react-router-dom';
 import {Right1} from './Right1';
 import {Right2} from './Right2';
 import {Home} from './Home';
+import './vertical-menu.css'
+
+
+const menuTree = {
+    type:'vertical',
+    items:[
+        {
+            level:1,
+            label:'Khách hàng',
+            subItems:[
+                {
+                    level:2,
+                    label:'Thêm khách hàng',
+                    link:'/admin/customers/create'
+                },
+                {
+                    level:2,
+                    label:'test sublist',
+                    subItems:[
+                        {
+                            level:3,
+                            label: '1',
+                            link: '/1'
+                        },
+                        {
+                            level:3,
+                            label: '2',
+                            link: '/1'
+                        },
+                        {
+                            level:3,
+                            label: '2',
+                            link: '/1'
+                        }
+                    ]
+                },
+                {
+                    level:2,
+                    label:'Danh sách khách hàng',
+                    link:'/admin/customers'
+                }
+                
+            ]
+        },
+        {
+            level: 1,
+            label:'Đơn hàng',
+            subItems:[
+                {
+                    level: 2,
+                    label:'Bán hàng',
+                    link:'/admin/orders/pos'
+                },
+                {
+                    level: 2,
+                    label:'Đặt hàng',
+                    link:'/admin/orders/create'
+                },
+                {
+                    level: 2,
+                    label:'Danh sách đơn hàng',
+                    link:'/admin/orders'
+                }
+            ]
+        }
+    ]
+}
+
+class MenuItem extends React.Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            hovered:false
+        };
+    }
+    hovered(){
+        let state = this.state;
+        state.hovered = true;
+        this.setState(state);
+    }
+    unhovered(){
+        let state = this.state;
+        state.hovered = false;
+        this.setState(state);
+    }
+    render(){
+        let style ={};
+        Object.assign(style, this.props.style);
+        style.display = this.props.display;
+    
+        if(this.state.hovered)
+            style.backgroundColor = 'white';
+        
+        if(this.props.detail.subItems){
+            let displayChildren = 'none';
+            
+            if(this.state.hovered)
+                displayChildren = 'block';
+            return (
+                <li key={this.props.index} className='parent-item item' style={style} onMouseEnter={this.hovered.bind(this)} onMouseLeave={this.unhovered.bind(this)}>
+                    <Link to='#'>{this.props.detail.label}</Link>
+                    <ul className='menu-item-wrapper' style={{display:displayChildren, position:'absolute', left:199, width:199, top:-20}}>
+                        {
+                            this.props.detail.subItems.map(function(subItem, subIndex){
+                                return <MenuItem detail={subItem} key={subIndex} index={subIndex} style={{position:'relative'}}/>
+                            })
+                        }
+                    </ul>
+                </li>
+            );
+        }
+        else{
+            return (
+                <li key={this.props.index} className='item' style={style} onMouseEnter={this.hovered.bind(this)} onMouseLeave={this.unhovered.bind(this)}>
+                    <Link to={this.props.detail.link}>{this.props.detail.label}</Link>
+                </li>
+            );
+        }
+    }
+}
 
 class VerticalMenu extends React.Component{
     render(){
         return (
-            <div style={{flexGrow:1, backgroundColor:'yellow'}}>
-                    <ul>
-                    
-                        <li>
-                        <Link to="/">Home</Link>
-                        </li>
-                        <li>
-                        <Link to="/right1">Right1</Link>
-                        </li>
-                        <li>
-                        <Link to="/right2">Right2</Link>
-                        </li>
-                    </ul>
-                    {this.props.children}
+            <div className='vertical-menu-container' style={{position:'relative', backgroundColor:'yellow', flexGrow:1}}>
+                <ul className='menu-item-wrapper' style={{position:'absolute', width:199}}>
+                    {
+                        menuTree.items.map(function(item, index){
+                            return <MenuItem detail={item} key={index} index={index} display='block' style={{position:'relative'}}/>
+                        })
+                    }
+                </ul>
             </div>
+            
         );
     }
 }
