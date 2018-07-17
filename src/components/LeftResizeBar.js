@@ -23,7 +23,7 @@ LeftResizeBar.propsTypes = {
 }
 
 const mapStateToProps = (state) => {
-    return Object.assign({}, state.components.left.resizeBar);
+    return state.components.left.resizeBar;
 }
 const mapDispatchToProps = dispatch => {
     return {

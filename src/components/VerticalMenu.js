@@ -3,7 +3,10 @@ import {Link, BrowserRouter as Router, Route} from 'react-router-dom';
 import {Right1} from './Right1';
 import {Right2} from './Right2';
 import {Home} from './Home';
-import './vertical-menu.css'
+import './vertical-menu.css';
+import {connect} from 'react-redux';
+import {set} from 'dot-prop-immutable';
+import {VerticalMenuItem} from './VerticalMenuItem';
 
 
 const menuTree = {
@@ -71,74 +74,38 @@ const menuTree = {
     ]
 }
 
-class MenuItem extends React.Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            hovered:false
-        };
-    }
-    hovered(){
-        let state = this.state;
-        state.hovered = true;
-        this.setState(state);
-    }
-    unhovered(){
-        let state = this.state;
-        state.hovered = false;
-        this.setState(state);
-    }
-    render(){
-        let style ={};
-        Object.assign(style, this.props.style);
-        style.display = this.props.display;
-    
-        if(this.state.hovered)
-            style.backgroundColor = 'white';
-        
-        if(this.props.detail.subItems){
-            let displayChildren = 'none';
-            
-            if(this.state.hovered)
-                displayChildren = 'block';
-            return (
-                <li key={this.props.index} className='parent-item item' style={style} onMouseEnter={this.hovered.bind(this)} onMouseLeave={this.unhovered.bind(this)}>
-                    <Link to='#'>{this.props.detail.label}</Link>
-                    <ul className='menu-item-wrapper' style={{display:displayChildren, position:'absolute', left:199, width:199, top:-20}}>
-                        {
-                            this.props.detail.subItems.map(function(subItem, subIndex){
-                                return <MenuItem detail={subItem} key={subIndex} index={subIndex} style={{position:'relative'}}/>
-                            })
-                        }
-                    </ul>
-                </li>
-            );
-        }
-        else{
-            return (
-                <li key={this.props.index} className='item' style={style} onMouseEnter={this.hovered.bind(this)} onMouseLeave={this.unhovered.bind(this)}>
-                    <Link to={this.props.detail.link}>{this.props.detail.label}</Link>
-                </li>
-            );
-        }
-    }
-}
 
 class VerticalMenu extends React.Component{
     render(){
+        let listItemStyle = {
+            listStyleType:'none', 
+            position:'absolute', 
+            width:this.props.style.width
+        }
         return (
-            <div className='vertical-menu-container' style={{position:'relative', backgroundColor:'yellow', flexGrow:1}}>
-                <ul className='menu-item-wrapper' style={{position:'absolute', width:199}}>
+            <div style={{position:'relative', backgroundColor:'yellow', flexGrow:1}}>
+                <ul style={listItemStyle}>
                     {
                         menuTree.items.map(function(item, index){
-                            return <MenuItem detail={item} key={index} index={index} display='block' style={{position:'relative'}}/>
+                            let itemDetail = set(item,'style', {width:listItemStyle.width});
+                            return <VerticalMenuItem detail={itemDetail} key={index} index={index}/>
                         })
                     }
                 </ul>
             </div>
-            
         );
     }
 }
+
+const mapStateToProps = state => {
+    return {
+        style:{
+            width: state.components.left.style.width - state.components.left.resizeBar.style.width
+        }
+        
+    }
+}
+
+VerticalMenu = connect(mapStateToProps, null)(VerticalMenu);
 
 export {VerticalMenu};
