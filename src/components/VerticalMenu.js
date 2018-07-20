@@ -1,97 +1,83 @@
 import React from 'react';
-import {Link, BrowserRouter as Router, Route} from 'react-router-dom';
-import {Right1} from './Right1';
-import {Right2} from './Right2';
-import {Home} from './Home';
-import './vertical-menu.css';
 import {connect} from 'react-redux';
-import {set} from 'dot-prop-immutable';
-import {VerticalMenuItem} from './VerticalMenuItem';
+import {ListVerticalMenuItem} from './VerticalMenuItem';
 
 
 const menuTree = {
     type:'vertical',
-    items:[
-        {
-            level:1,
-            label:'Khách hàng',
-            subItems:[
-                {
-                    level:2,
-                    label:'Thêm khách hàng',
-                    link:'/admin/customers/create'
-                },
-                {
-                    level:2,
-                    label:'test sublist',
-                    subItems:[
+    listItem:{
+        level: 1,
+        items:[
+            {
+                label:'Khách hàng',
+                listItem:{
+                    level: 2,
+                    items:[
                         {
-                            level:3,
-                            label: '1',
-                            link: '/1'
+                            label:'Thêm khách hàng',
+                            link:'/admin/customers/create'
                         },
                         {
-                            level:3,
-                            label: '2',
-                            link: '/1'
+                            label:'test sublist',
+                            listItem:{
+                                level: 3,
+                                items:[
+                                    {
+                                        label: '1',
+                                        link: '/1'
+                                    },
+                                    {
+                                        label: '2',
+                                        link: '/1'
+                                    },
+                                    {
+                                        label: '2',
+                                        link: '/1'
+                                    }
+                                ]
+                            }
                         },
                         {
-                            level:3,
-                            label: '2',
-                            link: '/1'
+                            label:'Danh sách khách hàng',
+                            link:'/admin/customers'
                         }
                     ]
-                },
-                {
-                    level:2,
-                    label:'Danh sách khách hàng',
-                    link:'/admin/customers'
                 }
-                
-            ]
-        },
-        {
-            level: 1,
-            label:'Đơn hàng',
-            subItems:[
-                {
+            },
+            {
+                label: 'Đơn hàng',
+                listItem:{
                     level: 2,
-                    label:'Bán hàng',
-                    link:'/admin/orders/pos'
-                },
-                {
-                    level: 2,
-                    label:'Đặt hàng',
-                    link:'/admin/orders/create'
-                },
-                {
-                    level: 2,
-                    label:'Danh sách đơn hàng',
-                    link:'/admin/orders'
+                    items:[
+                        {
+                            label: 'Create',
+                            link: '/admin/orders/create'
+                        },
+                        {
+                            label: 'List',
+                            link: '/admin/orders/index'
+                        }
+                    ]
                 }
-            ]
-        }
-    ]
+            }
+        ]
+    }
 }
 
 
 class VerticalMenu extends React.Component{
     render(){
         let listItemStyle = {
-            listStyleType:'none', 
-            position:'absolute', 
-            width:this.props.style.width
+            width: this.props.style.width
         }
         return (
             <div style={{position:'relative', backgroundColor:'yellow', flexGrow:1}}>
-                <ul style={listItemStyle}>
-                    {
-                        menuTree.items.map(function(item, index){
-                            let itemDetail = set(item,'style', {width:listItemStyle.width});
-                            return <VerticalMenuItem detail={itemDetail} key={index} index={index}/>
-                        })
-                    }
-                </ul>
+                <ListVerticalMenuItem 
+                    style={listItemStyle}
+                    level={1}
+                    items={menuTree.listItem.items}
+                >
+                </ListVerticalMenuItem>
             </div>
         );
     }

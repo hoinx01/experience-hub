@@ -6,7 +6,7 @@ import {MerchantBlock} from './MerchantBlock';
 import {UserBlock} from './UserBlock';
 import {VerticalMenu} from './VerticalMenu';
 import {Right1} from './Right1';
-import {Right2} from './Right2';
+import {CreateCustomer} from './CreateCustomer';
 import {Home} from './Home';
 import {Link, BrowserRouter as Router, Route} from 'react-router-dom';
 

@@ -4,7 +4,7 @@ import {PropTypes} from 'prop-types';
 import {get} from 'dot-prop-immutable';
 import {Link, BrowserRouter as Router, Route, withRouter} from 'react-router-dom';
 import {Right1} from './Right1';
-import {Right2} from './Right2';
+import {CreateCustomer} from './CreateCustomer';
 import {Home} from './Home';
 import {locationChange} from '../redux/actions';
 

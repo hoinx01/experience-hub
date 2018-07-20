@@ -6,7 +6,7 @@ import {doMouseUp, resizingLeft} from '../redux/actions'
 // import {CtnLeft} from './containers/CtnLeft';
 import {Link, BrowserRouter as Router, Route, withRouter} from 'react-router-dom';
 import {Right1} from './Right1';
-import {Right2} from './Right2';
+import {CreateCustomer} from './CreateCustomer';
 import {Home} from './Home';
 
 
@@ -20,7 +20,7 @@ class CrmLayout extends React.Component{
                     <Left/>
                     {/* <CtnLeft/> */}
                     <Right>
-                        <Route path="/right2" component={Right2} />
+                        <Route path="/admin/customers/create" component={CreateCustomer} />
                         <Route exact path="/" component={Home} />
                         <Route path="/right1" component={Right1} />
                         

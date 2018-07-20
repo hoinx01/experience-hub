@@ -21,7 +21,7 @@ const initState = {
             resizeBar:{
                 dragging:false,
                 style:{
-                    width:10,
+                    width:2,
                     backgroundColor:'white'
                 }
             },

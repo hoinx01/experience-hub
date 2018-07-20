@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import {get} from 'dot-prop-immutable';
+import {get,set} from 'dot-prop-immutable';
 
 class VerticalMenuItem extends React.Component{
     constructor(props){
@@ -10,30 +10,25 @@ class VerticalMenuItem extends React.Component{
         };
     }
     hovered(){
-        let state = get(this.state);
-        state.hovered = true;
+        let state = set(this.state,'hovered', true);
         this.setState(state);
     }
     unhovered(){
-        let state = get(this.state);
-        state.hovered = false;
+        let state = set(this.state,'hovered', false);
         this.setState(state);
     }
     render(){
         let style = {
+            width: this.props.style.width,
             backgroundColor:'orange'
         }
         if(this.state.hovered)
             style.backgroundColor = 'white';
         
-        if(this.props.detail.subItems){
-            console.log(this.props)
+        if(this.props.data.listItem){
             let listItemStyle = {
-                listStyleType:'none', 
-                position:'absolute', 
-                width:this.props.detail.style.width,
-                top:-20,
-                display: 'none'
+                width:this.props.style.width,
+                display:'none'
             }
             
             if(this.state.hovered)
@@ -41,26 +36,61 @@ class VerticalMenuItem extends React.Component{
 
             return (
                 <li style={style} onMouseEnter={this.hovered.bind(this)} onMouseLeave={this.unhovered.bind(this)}>
-                    <Link to='#'>{this.props.detail.label}</Link>
-                    <ul className='menu-item-wrapper' style={listItemStyle}>
-                        {
-                            this.props.detail.subItems.map(function(subItem, subIndex){
-                                return <VerticalMenuItem detail={subItem} key={subIndex} index={subIndex} style={{position:'relative'}}/>
-                            })
-                        }
-                    </ul>
+                    <Link to='#'>{this.props.data.label}</Link>
+                    <ListVerticalMenuItem 
+                        style={listItemStyle} 
+                        level={this.props.data.listItem.level} 
+                        items={this.props.data.listItem.items}
+                    >
+                    </ListVerticalMenuItem>
                 </li>
             );
         }
         else{
             return (
                 <li style={style} onMouseEnter={this.hovered.bind(this)} onMouseLeave={this.unhovered.bind(this)}>
-                    <Link to={this.props.detail.link}>{this.props.detail.label}</Link>
+                    <Link to={this.props.data.link}>{this.props.data.label}</Link>
                 </li>
             );
         }
     }
 }
 
-export {VerticalMenuItem};
+
+class ListVerticalMenuItem extends React.Component{
+    render(){
+        let style = {
+            width: this.props.style.width,
+            listStyleType:'none',
+            display : 'block',
+            position : 'relative',
+            paddingLeft: 0
+        }
+        if(this.props.level > 1){
+            style.display = this.props.style.display;
+            style.position = 'absolute';
+            style.top = -20;
+            style.left = this.props.style.width
+        }
+        return (
+            <ul style={style}>
+                {
+                    this.props.items.map(function(item, index){
+                        let itemStyle = {width: style.width};
+                        return (
+                            <VerticalMenuItem
+                                key={index}
+                                data = {item}
+                                style = {itemStyle}
+                            >
+                            </VerticalMenuItem>
+                        );    
+                    })
+                }
+            </ul>
+        );
+    }
+}
+
+export {ListVerticalMenuItem};
 
